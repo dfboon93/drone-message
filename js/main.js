@@ -92,6 +92,25 @@ if (mode === 'recipient') {
 ui.setThemeSel(theme);
 if (share) ui.state.theme = theme;
 
+// Touch/press engagement: while a finger (or held mouse button) is down,
+// drones near it are repelled and pour back into formation on release.
+const activePointers = new Map();
+window.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('button, input, a, .card')) return;
+  activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+});
+window.addEventListener('pointermove', (e) => {
+  const p = activePointers.get(e.pointerId);
+  if (p) {
+    p.x = e.clientX;
+    p.y = e.clientY;
+  }
+});
+for (const type of ['pointerup', 'pointercancel']) {
+  window.addEventListener(type, (e) => activePointers.delete(e.pointerId));
+}
+window.addEventListener('blur', () => activePointers.clear());
+
 let resizeTimer = 0;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
@@ -131,6 +150,7 @@ function frame(nowMs) {
   starfield.drawTwinklers(sceneCtx, nowSec);
 
   show.update(dt, nowSec);
+  swarm.pointers = [...activePointers.values()];
   swarm.update(dt, nowSec, W, H);
   swarm.draw(sceneCtx, nowSec);
 }

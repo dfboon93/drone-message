@@ -1,7 +1,7 @@
 // Drone swarm: struct-of-arrays particle model with under-damped spring
 // steering and a pre-rendered glow sprite (shadowBlur is too slow at 1000+).
 
-import { PHYSICS } from './config.js';
+import { PHYSICS, TOUCH } from './config.js';
 
 const SPRITE_SIZE = 64;
 
@@ -56,6 +56,7 @@ export class Swarm {
     this.mode = 'idle'; // idle | seek | free
     this.fade = 1;
     this.retargetAt = 0;
+    this.pointers = []; // active touches/presses: [{x, y}]
     this.sprite = makeGlowSprite(themeColors);
   }
 
@@ -121,9 +122,31 @@ export class Swarm {
     }
   }
 
+  // Push drones away from active touches; the spring pulls them back into
+  // formation as soon as the finger lifts or moves on.
+  applyPointerForces(dt) {
+    const { count, x, y, vx, vy } = this;
+    const R = TOUCH.RADIUS;
+    const R2 = R * R;
+    for (const p of this.pointers) {
+      for (let i = 0; i < count; i++) {
+        const dx = x[i] - p.x;
+        const dy = y[i] - p.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < R2 && d2 > 0.01) {
+          const d = Math.sqrt(d2);
+          const f = (TOUCH.FORCE * (1 - d / R) * dt) / d;
+          vx[i] += dx * f;
+          vy[i] += dy * f;
+        }
+      }
+    }
+  }
+
   update(dt, now, W, H) {
     const { count, x, y, vx, vy, tx, ty, delay, stiff } = this;
     const fr = Math.pow(PHYSICS.FRICTION, dt * 60);
+    if (this.pointers.length) this.applyPointerForces(dt);
     if (this.mode === 'seek') {
       const t = now - this.retargetAt;
       for (let i = 0; i < count; i++) {
@@ -146,6 +169,12 @@ export class Swarm {
       }
     } else { // idle fireflies: drift and wrap
       for (let i = 0; i < count; i++) {
+        // No steady-state friction here, so bleed off touch-repulsion speed
+        // once it exceeds the natural drift range.
+        if (vx[i] * vx[i] + vy[i] * vy[i] > 625) {
+          vx[i] *= fr;
+          vy[i] *= fr;
+        }
         x[i] += vx[i] * dt;
         y[i] += vy[i] * dt;
         if (x[i] < -20) x[i] = W + 20; else if (x[i] > W + 20) x[i] = -20;

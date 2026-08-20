@@ -29,6 +29,11 @@ export const TIMINGS = {
 
 export const TRAIL_FADE = 0.4; // per-frame alpha erased from the scene canvas
 
+export const TOUCH = {
+  RADIUS: 130, // px around a touch/press that drones avoid
+  FORCE: 2600, // peak repulsion acceleration (px/s²) at the touch point
+};
+
 export function droneCountFor(w, h) {
   return Math.max(400, Math.min(1200, Math.round((w * h) / 900)));
 }
