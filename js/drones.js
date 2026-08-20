@@ -44,6 +44,7 @@ export class Swarm {
     this.twF = new Float32Array(count);     // twinkle frequency
     this.twP = new Float32Array(count);     // twinkle phase
     this.size = new Float32Array(count);
+    this.depth = new Float32Array(count).fill(1); // 3D perspective scale, 1 = flat
     for (let i = 0; i < count; i++) {
       this.stiff[i] = 0.8 + Math.random() * 0.4;
       this.wobF[i] = 1.5 + Math.random() * 2.5;
@@ -92,6 +93,17 @@ export class Swarm {
       this.tx[i] = points[i * 2];
       this.ty[i] = points[i * 2 + 1];
       this.delay[i] = Math.random() * maxStagger;
+      this.depth[i] = 1;
+    }
+  }
+
+  // Move the targets without resetting staggers — used for rotating
+  // formations, where drones chase continuously moving targets.
+  updateTargets(points, depths) {
+    for (let i = 0; i < this.count; i++) {
+      this.tx[i] = points[i * 2];
+      this.ty[i] = points[i * 2 + 1];
+      if (depths) this.depth[i] = depths[i];
     }
   }
 
@@ -168,8 +180,9 @@ export class Swarm {
       const px = x[i] + Math.sin(w) * amp;
       const py = y[i] + Math.cos(w * 0.9) * amp;
       const twinkle = 0.7 + 0.3 * Math.sin(now * twF[i] + twP[i]);
-      ctx.globalAlpha = twinkle * this.fade * (idle ? 0.35 : 1);
-      const s = size[i];
+      const depth = this.depth[i];
+      ctx.globalAlpha = twinkle * this.fade * (idle ? 0.35 : 1) * Math.min(1, 0.45 + 0.55 * depth);
+      const s = size[i] * depth;
       ctx.drawImage(sprite, px - s / 2, py - s / 2, s, s);
     }
     ctx.globalAlpha = 1;

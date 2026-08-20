@@ -3,7 +3,7 @@
 // Retargeting with fresh per-drone staggers IS the transition between
 // phases — no separate scatter state needed.
 
-import { CHUNK_LEN, TIMINGS } from './config.js';
+import { CHUNK_LEN, TIMINGS, SHAPE_SPIN } from './config.js';
 import { textTargets, shapeTargets, scatterTargets } from './targets.js';
 import { SHAPES } from './shapes.js';
 
@@ -83,8 +83,35 @@ export class Show {
   enterForm(k, now) {
     this.k = k;
     this.t = 0;
+    this.theta = 0;
     this.state = 'form';
     this.swarm.setTargets(this.pointSets[k], now);
+  }
+
+  // 3D spin: rotate the flat shape's points around a vertical axis through
+  // its center, with perspective. Only relX matters for a flat formation:
+  //   z = relX·sinθ, scale = f/(f+z), then project back around the center.
+  spinShape(dt) {
+    this.theta += dt * SHAPE_SPIN;
+    const n = this.swarm.count;
+    if (!this.projBuf || this.projBuf.length !== n * 2) {
+      this.projBuf = new Float32Array(n * 2);
+      this.depthBuf = new Float32Array(n);
+    }
+    const base = this.pointSets[this.k];
+    const cx = this.W / 2;
+    const cy = this.H * 0.45;
+    const f = Math.min(this.W, this.H) * 1.4;
+    const cosT = Math.cos(this.theta);
+    const sinT = Math.sin(this.theta);
+    for (let i = 0; i < n; i++) {
+      const relX = base[i * 2] - cx;
+      const scale = f / (f + relX * sinT);
+      this.projBuf[i * 2] = cx + relX * cosT * scale;
+      this.projBuf[i * 2 + 1] = cy + (base[i * 2 + 1] - cy) * scale;
+      this.depthBuf[i] = scale;
+    }
+    this.swarm.updateTargets(this.projBuf, this.depthBuf);
   }
 
   stop() {
@@ -106,6 +133,7 @@ export class Show {
         }
         break;
       case 'hold':
+        if (this.phases[this.k].kind === 'shape') this.spinShape(dt);
         if (this.t >= this.holdDuration(this.phases[this.k])) {
           if (this.k + 1 < this.phases.length) {
             this.enterForm(this.k + 1, now);

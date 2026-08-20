@@ -9,7 +9,8 @@ export const THEMES = {
   rose: { core: '#fff0f5', glow: '#fda4af' },
 };
 export const DEFAULT_THEME = 'gold';
-export const SHAPE_IDS = ['heart', 'star'];
+export const SHAPE_IDS = ['heart', 'star', 'moon', 'flower', 'diamond'];
+export const SHAPE_SPIN = 1.1; // rad/s of 3D rotation while a shape holds
 
 export const PHYSICS = {
   K: 12,            // spring stiffness
@@ -22,7 +23,7 @@ export const TIMINGS = {
   FORM_TIMEOUT: 4.0,  // max seconds waiting for a formation to settle
   HOLD_BASE: 1.8,
   HOLD_PER_CHAR: 0.08,
-  SHAPE_HOLD: 3.2,
+  SHAPE_HOLD: 6.5, // long enough for a full 3D revolution
   FINALE_FADE: 3.0,
 };
 

@@ -6,7 +6,7 @@ Instead of physical drones and LEDs, this app simulates the effect in the browse
 
 ## How it works
 
-- **Send**: type a message, pick an optional closing shape (♥ / ★) and a light color, then **Copy link**. The message is encoded in the URL itself — no backend, no storage.
+- **Send**: type a message, pick an optional closing shape (♥ ★ ☾ ✿ ◆ — held in a 3D rotation, spinning around its vertical axis with perspective) and a light color, then **Copy link**. The message is encoded in the URL itself — no backend, no storage.
 - **Receive**: open the link, tap to begin, and watch the swarm spell it out over a twinkling starfield with ambient WebAudio sound (synthesized in the browser — no audio files).
 
 ## Tech

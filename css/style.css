@@ -10,7 +10,7 @@ html, body {
 }
 
 body {
-  background: radial-gradient(ellipse at 50% 120%, #0a1030 0%, #050818 45%, #01020c 100%);
+  background: radial-gradient(ellipse at 50% 120%, #060a20 0%, #030510 45%, #010208 100%);
 }
 
 canvas {
@@ -79,6 +79,8 @@ h1 {
 #msgInput::placeholder { color: #4b5578; text-transform: none; letter-spacing: 0.02em; }
 
 .row { margin-top: 14px; display: flex; justify-content: center; gap: 10px; }
+.row.wrap { flex-wrap: wrap; }
+.row.wrap .pick { min-width: 46px; padding: 8px 10px; }
 .row.counter { margin-top: 6px; justify-content: flex-end; }
 #charCount { font-size: 0.72rem; color: #5a6591; letter-spacing: 0.08em; }
 

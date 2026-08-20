@@ -33,4 +33,46 @@ function star(ctx, w, h) {
   ctx.fill();
 }
 
-export const SHAPES = { heart, star };
+function moon(ctx, w, h) {
+  const cx = w / 2, cy = h / 2;
+  const R = Math.min(w, h) * 0.42;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fill();
+  // Carve the crescent out of the disc.
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath();
+  ctx.arc(cx + R * 0.5, cy - R * 0.18, R * 0.85, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+function flower(ctx, w, h) {
+  const cx = w / 2, cy = h / 2;
+  const R = Math.min(w, h) * 0.44;
+  const petalR = R * 0.3;
+  for (let k = 0; k < 6; k++) {
+    const a = (k * Math.PI) / 3;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * R * 0.6, cy + Math.sin(a) * R * 0.6, petalR, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.25, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function diamond(ctx, w, h) {
+  const cx = w / 2, cy = h / 2;
+  const hw = Math.min(w, h) * 0.34;
+  const hh = Math.min(w, h) * 0.46;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - hh);
+  ctx.lineTo(cx + hw, cy);
+  ctx.lineTo(cx, cy + hh);
+  ctx.lineTo(cx - hw, cy);
+  ctx.closePath();
+  ctx.fill();
+}
+
+export const SHAPES = { heart, star, moon, flower, diamond };

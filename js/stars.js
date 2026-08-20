@@ -16,7 +16,7 @@ export class Starfield {
       const x = Math.random() * W;
       const y = Math.random() * H;
       const r = Math.random() * 1.1 + 0.2;
-      ctx.globalAlpha = 0.15 + Math.random() * 0.5;
+      ctx.globalAlpha = 0.05 + Math.random() * 0.25;
       ctx.fillStyle = Math.random() < 0.15 ? '#cfe4ff' : '#ffffff';
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -39,7 +39,7 @@ export class Starfield {
   drawTwinklers(ctx, now) {
     ctx.fillStyle = '#ffffff';
     for (const s of this.twinklers) {
-      ctx.globalAlpha = 0.25 + 0.4 * (0.5 + 0.5 * Math.sin(now * s.f + s.p));
+      ctx.globalAlpha = 0.08 + 0.22 * (0.5 + 0.5 * Math.sin(now * s.f + s.p));
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
