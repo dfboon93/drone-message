@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>drone·message</title>
+  <meta name="description" content="Send a message written in the night sky by a swarm of light drones.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <canvas id="scene"></canvas>
+
+  <div id="composer" class="overlay hidden">
+    <div class="card">
+      <h1>drone·message</h1>
+      <p class="tag">send a message written in the night sky</p>
+      <input id="msgInput" type="text" maxlength="80" placeholder="HAPPY BIRTHDAY LENA"
+             autocomplete="off" spellcheck="false">
+      <div class="row counter"><span id="charCount">0 / 80</span></div>
+      <div class="row picks" id="shapePick" aria-label="closing formation">
+        <button type="button" class="pick sel" data-shape="">none</button>
+        <button type="button" class="pick" data-shape="heart">&#9829;</button>
+        <button type="button" class="pick" data-shape="star">&#9733;</button>
+      </div>
+      <div class="row picks" id="themePick" aria-label="light color">
+        <button type="button" class="swatch sel" data-theme="gold" style="--c:#ffc966"></button>
+        <button type="button" class="swatch" data-theme="ice" style="--c:#7dd3fc"></button>
+        <button type="button" class="swatch" data-theme="rose" style="--c:#fda4af"></button>
+      </div>
+      <div class="row actions">
+        <button type="button" id="previewBtn" disabled>Preview</button>
+        <button type="button" id="copyBtn" disabled>Copy link</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="gate" class="overlay hidden">
+    <button type="button" id="beginBtn">tap to begin &#10022;</button>
+  </div>
+
+  <div id="endcard" class="overlay hidden">
+    <div class="card slim">
+      <button type="button" id="replayBtn">Replay</button>
+      <a id="createLink" class="ghost" href="#">Create your own</a>
+    </div>
+  </div>
+
+  <div id="hud" class="hidden">
+    <button type="button" id="muteBtn" title="mute">&#128266;</button>
+    <button type="button" id="backBtn" class="hidden" title="back">&#10005;</button>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
